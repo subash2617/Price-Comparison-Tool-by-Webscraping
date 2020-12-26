@@ -1,0 +1,105 @@
+pip install bs4
+from bs4 import BeautifulSoup
+import requests
+ 
+# Function to extract Product Title
+def get_amazon_title(soup):
+     
+    try:
+        # Outer Tag Object
+        title = soup.find("span", attrs={"id":'productTitle'})
+ 
+        # Inner NavigableString Object
+        title_value = title.string
+ 
+        # Title as a string value
+        title_string = title_value.strip()
+ 
+    except AttributeError:
+        title_string = ""   
+ 
+    return title_string
+ 
+# Function to extract Product Price
+def get_amazon_price(soup):
+ 
+    try:
+        price = soup.find("span", attrs={'id':'priceblock_ourprice'}).string.strip()
+ 
+    except AttributeError:
+        price = ""  
+ 
+    return price
+ 
+# Function to extract Availability Status
+def get_amazon_availability(soup):
+    try:
+        available = soup.find("div", attrs={'id':'availability'})
+        available = available.find("span").string.strip()
+ 
+    except AttributeError:
+        available = ""  
+ 
+    return available 
+
+# Product Title
+def get_title(soup):
+     
+    try:
+        title = soup.find("span", attrs={'class':'B_NuCI'}).string.strip()
+ 
+    except AttributeError:
+        title = ""   
+
+    return title
+  
+# Product Price
+def get_price(soup):
+
+   try:
+     price = soup.find("div", attrs={'class':'_30jeq3 _16Jk6d'}).string.strip()
+     
+   except AttributeError:
+     price = ""
+
+   return price
+
+# Function to extract Availability Status
+def get_availability(soup):
+    try:
+        available = soup.find("div", attrs={'class':'_16FRp0'}).string.strip()
+ 
+    except AttributeError:
+        available = ""  
+ 
+    return available   
+ 
+if __name__ == '__main__':
+ 
+    # Headers for request
+    HEADERS = ({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'})
+ 
+    # The webpage URL
+    URL1 = "https://www.amazon.in/Apple-iPhone-12-64GB-Blue/dp/B08L5WHFT9/ref=sr_1_4?dchild=1&keywords=iphone+12+mini&qid=1608953587&sr=8-4"
+    URL2 = "https://www.flipkart.com/apple-iphone-12-mini-blue-64-gb/p/itm2883104474448?pid=MOBFWBYZC6UYGR2R&lid=LSTMOBFWBYZC6UYGR2RMNRM7G&marketplace=FLIPKART&srno=s_1_1&otracker=AS_Query_OrganicAutoSuggest_1_25_na_na_ps&otracker1=AS_Query_OrganicAutoSuggest_1_25_na_na_ps&fm=SEARCH&iid=12648e51-6858-469c-84f8-15ecf2339814.MOBFWBYZC6UYGR2R.SEARCH&ppt=sp&ppn=sp&ssid=4afqp91kts0000001608953677944&qH=cc4d286a55983c6f"
+
+ 
+    # HTTP Request
+    webpage = requests.get(URL1, headers=HEADERS)
+    webpage = requests.get(URL2, headers=HEADERS)
+ 
+    # Soup Object containing all data
+    soup = BeautifulSoup(webpage.content, "lxml")
+ 
+    # Function calls to display all necessary product information
+    print("AMAZON INFO")
+    print("Product Title =", get_amazon_title(soup))
+    print("Product Price =", get_amazon_price(soup))
+    print("Availability =", get_amazon_availability(soup))
+    print()
+    print()
+    print("FLIPKART INFO")
+    print("Product Title =", get_title(soup))
+    print("Product Price =", get_price(soup))
+    print("Availability =", get_availability(soup))
+    print()
